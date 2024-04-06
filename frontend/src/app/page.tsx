@@ -1,7 +1,9 @@
-import Image from "next/image";
+import { Button } from "antd";
 
 export default function Home() {
   return (
-    <h1>Hello World</h1>
+    <div className="App">
+      <Button type="primary">Button</Button>
+    </div>
   );
 }
