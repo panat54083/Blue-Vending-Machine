@@ -1,9 +1,17 @@
+'use client';
+
 import { Button } from "antd";
+import * as action from "@/utils/action";
 
 export default function Home() {
+  const handleGetHelloWorld = async () => {
+    await action.getHelloWorld();
+  };
   return (
     <div className="App">
-      <Button type="primary">Button</Button>
+      <Button type="primary" onClick={handleGetHelloWorld}>
+        Button
+      </Button>
     </div>
   );
 }
