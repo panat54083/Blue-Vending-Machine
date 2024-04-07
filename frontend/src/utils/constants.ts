@@ -5,20 +5,18 @@ export type ICurrency = {
   amount: number; // initial amount available
 };
 
-// Define constants for coins
 export const COINS: ICurrency[] = [
-  { name: "1 THB", value: 1, amount: 100 },
-  { name: "5 THB", value: 5, amount: 100 },
-  { name: "10 THB", value: 10, amount: 100 },
+  { name: "OneTHB", value: 1, amount: 100 },
+  { name: "FiveTHB", value: 5, amount: 100 },
+  { name: "TenTHB", value: 10, amount: 100 },
 ];
 
-// Define constants for banknotes
 export const BANKNOTES: ICurrency[] = [
-  { name: "20 THB", value: 20, amount: 100 },
-  { name: "50 THB", value: 50, amount: 100 },
-  { name: "100 THB", value: 100, amount: 100 },
-  { name: "500 THB", value: 500, amount: 100 },
-  { name: "1000 THB", value: 1000, amount: 100 },
+  { name: "TwentyTHB", value: 20, amount: 100 },
+  { name: "FiftyTHB", value: 50, amount: 100 },
+  { name: "HundredTHB", value: 100, amount: 100 },
+  { name: "FiveHundredTHB", value: 500, amount: 100 },
+  { name: "ThousandTHB", value: 1000, amount: 100 },
 ];
 
 // Define type for goods
