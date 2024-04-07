@@ -23,7 +23,7 @@ function Pocket({
     const backnote = backnotes.find((b) => b.name === name);
     if (backnote) {
       const updatedBacknotes = selectedBacknotes.filter(
-        (note) => note.name !== name
+        (b) => b.name !== name
       );
       if (quantity > 0) {
         updatedBacknotes.push({ ...backnote, quantity });
@@ -80,6 +80,7 @@ function Pocket({
             </span>
             <InputNumber
               min={0}
+              max={backnote.quantity}
               defaultValue={0}
               onChange={(value) =>
                 handleBacknoteSelection(backnote.name, value ? value : 0)
@@ -99,6 +100,7 @@ function Pocket({
             </span>
             <InputNumber
               min={0}
+              max={coin.quantity}
               defaultValue={0}
               onChange={(value) =>
                 handleCoinSelection(coin.name, value ? value : 0)
