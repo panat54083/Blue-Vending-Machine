@@ -27,7 +27,7 @@ export type IProduct = {
 };
 
 // Define constants for goods
-export const GOODS: IProduct[] = [
+export const PRODUCTS: IProduct[] = [
   { name: "Soda", price: 20, stock: 10 },
   { name: "Chips", price: 30, stock: 15 },
   { name: "Chocolate", price: 25, stock: 20 },
