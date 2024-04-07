@@ -59,7 +59,7 @@ async fn main() -> Result<(), rocket::Error> {
     .expect("error while building CORS");
 
     let _rocket = rocket::build()
-        .mount("/api", routes![get_product_stock])
+        .mount("/api/vending-machine", routes![get_product_stock])
         .attach(cors)
         .launch()
         .await?;
