@@ -1,19 +1,17 @@
 "use client";
 
-import { Button } from "antd";
-import * as action from "@/utils/action";
-import axios from "axios";
+import { BANKNOTES, COINS } from "@/utils/constants";
+import Pocket from "./components/Pocket";
 
 export default function Home() {
-  const handleGetHelloWorld = async () => {
-    await action.getStockProducts();
-  };
-
   return (
-    <div className="App">
-      <Button type="primary" onClick={handleGetHelloWorld}>
-        Button
-      </Button>
+    <div className="min-h-screen bg-blue-200 flex flex-row p-4 gap-4">
+      {/* user pocket */}
+      <div className="bg-white basis-1/3">
+        <Pocket backnotes={BANKNOTES} coins={COINS} />
+      </div>
+      {/* vending machine */}
+      <div className="bg-green-200 flex-1"></div>
     </div>
   );
 }
