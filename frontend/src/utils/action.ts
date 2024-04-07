@@ -1,6 +1,6 @@
 import { axiosInstance } from "./axios-instance";
 
-export const getAllGoods = async () => {
-  const response = await axiosInstance.get("/");
+export const getStockProducts = async () => {
+  const response = await axiosInstance.get("/products");
   console.log(response.data);
 };

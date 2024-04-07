@@ -2,7 +2,6 @@
 extern crate rocket;
 
 use rocket::serde::{json::Json, Serialize};
-use rocket::tokio::time::{sleep, Duration};
 
 use rocket_cors::{AllowedHeaders, AllowedMethods, AllowedOrigins};
 
@@ -11,30 +10,34 @@ use std::str::FromStr;
 #[derive(Serialize)]
 #[serde(crate = "rocket::serde")]
 
-struct GOODS {
-    id: i32,
+struct Product {
     name: String,
-    value: i32,
+    price: f32,
+    stock: u32,
 }
 
-#[get("/")]
-fn get_all_goods() -> Json<GOODS> {
-    Json(GOODS {
-        id: 1,
-        name: "test".to_string(),
-        value: 1,
-    })
-}
+#[get("/products")]
+fn get_product_stock() -> Json<Vec<Product>> {
+    // Retrieve product stock information
+    let products = vec![
+        Product {
+            name: "Coke".to_string(),
+            price: 20.0,
+            stock: 5,
+        },
+        Product {
+            name: "Chips".to_string(),
+            price: 30.0,
+            stock: 7,
+        },
+        Product {
+            name: "Chocolate".to_string(),
+            price: 40.0,
+            stock: 3,
+        },
+    ];
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-
-#[get("/delay/<seconds>")]
-async fn delay(seconds: u64) -> String {
-    sleep(Duration::from_secs(seconds)).await;
-    format!("Waited for {} seconds", seconds)
+    Json(products)
 }
 
 #[rocket::main]
@@ -56,8 +59,7 @@ async fn main() -> Result<(), rocket::Error> {
     .expect("error while building CORS");
 
     let _rocket = rocket::build()
-        .mount("/api", routes![index, delay])
-        .mount("/", routes![get_all_goods])
+        .mount("/api", routes![get_product_stock])
         .attach(cors)
         .launch()
         .await?;

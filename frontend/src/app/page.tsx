@@ -6,7 +6,7 @@ import axios from "axios";
 
 export default function Home() {
   const handleGetHelloWorld = async () => {
-    await action.getAllGoods();
+    await action.getStockProducts();
   };
 
   return (
