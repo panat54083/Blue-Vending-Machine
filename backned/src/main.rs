@@ -1,33 +1,47 @@
 #[macro_use]
 extern crate rocket;
 
+use backend::establish_connection;
 use rocket::serde::{json::Json, Serialize};
 use rocket_cors::{AllowedHeaders, AllowedMethods, AllowedOrigins};
 use std::str::FromStr;
 
+mod schema;
+use schema::products;
+
 #[derive(Serialize)]
 #[serde(crate = "rocket::serde")]
-struct Product {
+struct Product2 {
     name: String,
     price: f32,
     stock: u32,
 }
 
 #[get("/products")]
-fn get_product_stock() -> Json<Vec<Product>> {
+fn get_product_stock() -> Json<Vec<Product2>> {
+    let connection = &mut establish_connection();
+    let results = products.load(connection).expect("Error loading posts");
+
+    println!("Displaying {} posts", results.len());
+    for post in results {
+        println!("{}", post.title);
+        println!("-----------\n");
+        println!("{}", post.body);
+    }
+
     // Retrieve product stock information
     let products = vec![
-        Product {
+        Product2 {
             name: "Coke".to_string(),
             price: 20.0,
             stock: 5,
         },
-        Product {
+        Product2 {
             name: "Chips".to_string(),
             price: 30.0,
             stock: 7,
         },
-        Product {
+        Product2 {
             name: "Chocolate".to_string(),
             price: 40.0,
             stock: 3,
