@@ -49,7 +49,6 @@ export class VendingMachineController {
           });
 
           if (!existingProduct) {
-            await queryRunner.rollbackTransaction();
             res
               .status(404)
               .json({ message: `Product with ID ${product.id} not found` });
@@ -57,7 +56,6 @@ export class VendingMachineController {
           }
 
           if (existingProduct.stock <= 0) {
-            await queryRunner.rollbackTransaction();
             res.status(400).json({
               message: `Product "${existingProduct.name}" is out of stock`,
             });
@@ -104,7 +102,6 @@ export class VendingMachineController {
       );
 
       if (changeAmount < 0) {
-        await queryRunner.rollbackTransaction();
         res.status(400).json({
           message: "Insufficient change to return",
           change: changeToReturn,
@@ -112,7 +109,6 @@ export class VendingMachineController {
       }
 
       if (changeAmount > 0) {
-        await queryRunner.rollbackTransaction();
         res.status(400).json({
           message: "Insufficient change to return",
           change: changeToReturn,
@@ -128,7 +124,6 @@ export class VendingMachineController {
             });
 
           if (!existingCoinBanknote) {
-            await queryRunner.rollbackTransaction();
             res
               .status(404)
               .json({ message: `Coin with ID ${coinBanknote.id} not found` });
@@ -140,14 +135,13 @@ export class VendingMachineController {
             existingCoinBanknote.stock + coinBanknote.stock;
 
           await queryRunner.manager.save(existingCoinBanknote);
-
-          await queryRunner.commitTransaction();
-          res.status(200).json({
-            message: "Transaction successful",
-            change: changeToReturn,
-          });
         })
       );
+      await queryRunner.commitTransaction();
+      res.status(200).json({
+        message: "Transaction successful",
+        change: changeToReturn,
+      });
     } catch (error) {
       console.error(error);
       await queryRunner.rollbackTransaction();
