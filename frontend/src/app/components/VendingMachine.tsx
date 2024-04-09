@@ -5,9 +5,11 @@ import { IProduct } from "@/utils/types";
 function VendingMachine({
   products,
   onSelected,
+  onTotal,
 }: {
   products: IProduct[];
   onSelected: (data: IProduct[]) => void;
+  onTotal: (data: number) => void;
 }) {
   const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
 
@@ -29,11 +31,11 @@ function VendingMachine({
     selectedProducts.forEach((product) => {
       totalPrice += product.price * product.stock;
     });
+    onTotal(totalPrice);
     return totalPrice;
   };
 
   const handlConfirmPurchase = () => {
-    setSelectedProducts([]);
     onSelected(selectedProducts);
   };
 

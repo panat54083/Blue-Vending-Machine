@@ -5,6 +5,7 @@ import Pocket from "./components/Pocket";
 import VendingMachine from "./components/VendingMachine";
 import { useEffect, useState } from "react";
 import * as action from "@/utils/action";
+import Summary from "./components/Summary";
 
 export default function Home() {
   const [coinBanknotes, setCoinBanknotes] = useState<ICoinBanknote[]>([]);
@@ -12,6 +13,10 @@ export default function Home() {
   const [selectCoinBanknotes, setSelectCoinBanknotes] = useState<
     ICoinBanknote[]
   >([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPayment, setTotalPayment] = useState(0);
+
+  const [change, setChange] = useState<ICoinBanknote[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,8 +34,19 @@ export default function Home() {
     setSelectCoinBanknotes(coinBanknotes);
   };
 
+  const handleSetTotalPrice = (totalPrice: number) => {
+    setTotalPrice(totalPrice);
+  };
+
+  const handleSetTotalPayment = (totalPayment: number) => {
+    setTotalPayment(totalPayment);
+  };
+
   const handleSelectedProducts = async (products: IProduct[]) => {
-    await action.calculateChange(selectCoinBanknotes, products);
+    const response: { message: string; change: ICoinBanknote[] } =
+      await action.calculateChange(selectCoinBanknotes, products);
+
+    setChange(response.change);
   };
 
   return (
@@ -40,14 +56,22 @@ export default function Home() {
         <Pocket
           coinBanknotes={coinBanknotes}
           onSelected={handleSelectedCoinBanknotes}
+          onTotal={handleSetTotalPayment}
         />
       </div>
       {/* vending machine */}
-      <div className="bg-green-200 flex-1">
-        <VendingMachine
-          products={products}
-          onSelected={handleSelectedProducts}
-        />
+      <div className="bg-green-200 flex flex-col flex-1">
+        <div className="bg-green-200 flex-1">
+          <VendingMachine
+            products={products}
+            onSelected={handleSelectedProducts}
+            onTotal={handleSetTotalPrice}
+          />
+        </div>
+        {/* summary */}
+        <div className="bg-green-200 flex-1">
+          <Summary change={change} totalPayment={totalPayment} totalPrice={totalPrice} />
+        </div>
       </div>
     </div>
   );

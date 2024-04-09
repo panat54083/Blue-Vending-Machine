@@ -5,9 +5,11 @@ import { ICoinBanknote } from "@/utils/types";
 function Pocket({
   coinBanknotes,
   onSelected,
+  onTotal
 }: {
   coinBanknotes: ICoinBanknote[];
   onSelected: (data: ICoinBanknote[]) => void;
+  onTotal: (data: number) => void;
 }) {
   const [coins, setCoins] = useState<ICoinBanknote[]>([]);
   const [backnotes, setBacknotes] = useState<ICoinBanknote[]>([]);
@@ -48,6 +50,7 @@ function Pocket({
       totalValue += cb.value * cb.stock;
     });
 
+    onTotal(totalValue)
     return totalValue;
   };
 
