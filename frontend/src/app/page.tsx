@@ -18,13 +18,19 @@ export default function Home() {
 
   const [change, setChange] = useState<ICoinBanknote[]>([]);
 
+  const [coinBanknotesInStock, setCoinBanknotesInStock] = useState<
+    ICoinBanknote[]
+  >([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const sp = await action.getStockProducts();
       const cb = await action.getCoinBanknotes();
+      const cbs = await action.getAllCoinBanknotes();
 
       setCoinBanknotes(cb);
       setProducts(sp);
+      setCoinBanknotesInStock(cbs);
     };
 
     fetchData();
@@ -70,7 +76,12 @@ export default function Home() {
         </div>
         {/* summary */}
         <div className="bg-green-200 flex-1">
-          <Summary change={change} totalPayment={totalPayment} totalPrice={totalPrice} />
+          <Summary
+            change={change}
+            totalPayment={totalPayment}
+            totalPrice={totalPrice}
+            coinBanknotesInStock={coinBanknotesInStock}
+          />
         </div>
       </div>
     </div>

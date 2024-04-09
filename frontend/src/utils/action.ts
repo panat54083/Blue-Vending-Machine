@@ -22,3 +22,8 @@ export const getCoinBanknotes = async (): Promise<ICoinBanknote[]> => {
   const response: ICoinBanknote[] = await axiosInstance.get("/coin-banknotes");
   return response;
 };
+
+export const getAllCoinBanknotes = async (): Promise<ICoinBanknote[]> => {
+  const response: ICoinBanknote[] = await axiosInstance.get("/coin-banknotes/");
+  return response;
+};
