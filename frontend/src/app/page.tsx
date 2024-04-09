@@ -13,8 +13,6 @@ export default function Home() {
     ICoinBanknote[]
   >([]);
 
-  const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
-
   useEffect(() => {
     const fetchData = async () => {
       const sp = await action.getStockProducts();
@@ -31,9 +29,8 @@ export default function Home() {
     setSelectCoinBanknotes(coinBanknotes);
   };
 
-  const handleSelectedProducts = (products: IProduct[]) => {
-    console.log(products);
-    setSelectedProducts(products);
+  const handleSelectedProducts = async (products: IProduct[]) => {
+    await action.calculateChange(selectCoinBanknotes, products);
   };
 
   return (

@@ -11,14 +11,15 @@ export const getStockProducts = async (): Promise<IProduct[]> => {
 };
 
 export const calculateChange = async (
-  selectedMoney: any,
-  selectedProducts: any
+  selectedCoinBanknotes: ICoinBanknote[],
+  selectedProducts: IProduct[]
 ) => {
-  const response = await axiosInstance.post("/vending-machine/change", {
-    selectedMoney,
-    selectedProducts,
-  });
-  console.log(response.data);
+  console.log(selectedCoinBanknotes, selectedProducts);
+  // const response = await axiosInstance.post("/vending-machine/change", {
+  //   selectedMoney,
+  //   selectedProducts,
+  // });
+  // console.log(response);
 };
 
 export const getCoinBanknotes = async (): Promise<ICoinBanknote[]> => {
