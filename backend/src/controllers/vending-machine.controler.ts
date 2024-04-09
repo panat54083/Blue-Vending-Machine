@@ -37,13 +37,14 @@ export class VendingMachineController {
     // create a new query runner
     const queryRunner = AppDataSource.createQueryRunner();
 
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
       // 1. update product stock in database
       await Promise.all(
         products.map(async (product) => {
-          const existingProduct = await queryRunner.manager.findOneBy(Product, {
+          const existingProduct = await this.productRepository.findOneBy({
             id: product.id,
           });
 
@@ -71,9 +72,7 @@ export class VendingMachineController {
       );
 
       // 2. return change
-      const availableCoinBanknotes = await queryRunner.manager.find(
-        CoinBanknote
-      );
+      const availableCoinBanknotes = await this.coinBanknoteRepository.find();
 
       let changeToReturn: CoinBanknote[] = [];
 
@@ -123,12 +122,10 @@ export class VendingMachineController {
       // 3. update coin banknotes in database
       await Promise.all(
         coinBanknotes.map(async (coinBanknote) => {
-          const existingCoinBanknote = await queryRunner.manager.findOneBy(
-            CoinBanknote,
-            {
+          const existingCoinBanknote =
+            await this.coinBanknoteRepository.findOneBy({
               id: coinBanknote.id,
-            }
-          );
+            });
 
           if (!existingCoinBanknote) {
             await queryRunner.rollbackTransaction();
@@ -145,12 +142,10 @@ export class VendingMachineController {
           await queryRunner.manager.save(existingCoinBanknote);
 
           await queryRunner.commitTransaction();
-          res
-            .status(200)
-            .json({
-              message: "Transaction successful",
-              change: changeToReturn,
-            });
+          res.status(200).json({
+            message: "Transaction successful",
+            change: changeToReturn,
+          });
         })
       );
     } catch (error) {

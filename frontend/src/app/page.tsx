@@ -28,7 +28,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, []);
+  }, [change]);
 
   const handleSelectedCoinBanknotes = (coinBanknotes: ICoinBanknote[]) => {
     setSelectCoinBanknotes(coinBanknotes);
