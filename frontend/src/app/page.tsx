@@ -9,18 +9,32 @@ import * as action from "@/utils/action";
 export default function Home() {
   const [coinBanknotes, setCoinBanknotes] = useState<ICoinBanknote[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [selectCoinBanknotes, setSelectCoinBanknotes] = useState<
+    ICoinBanknote[]
+  >([]);
+
+  const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const sp = await action.getStockProducts();
       const cb = await action.getCoinBanknotes();
-      
-      setCoinBanknotes(cb)
+
+      setCoinBanknotes(cb);
       setProducts(sp);
     };
 
     fetchData();
   }, []);
+
+  const handleSelectedCoinBanknotes = (coinBanknotes: ICoinBanknote[]) => {
+    setSelectCoinBanknotes(coinBanknotes);
+  };
+
+  const handleSelectedProducts = (products: IProduct[]) => {
+    console.log(products);
+    setSelectedProducts(products);
+  };
 
   return (
     <div className="min-h-screen bg-blue-200 flex flex-row p-4 gap-4">
@@ -28,12 +42,15 @@ export default function Home() {
       <div className="bg-white basis-1/3">
         <Pocket
           coinBanknotes={coinBanknotes}
-          onSelected={(data) => console.log(data)}
+          onSelected={handleSelectedCoinBanknotes}
         />
       </div>
       {/* vending machine */}
       <div className="bg-green-200 flex-1">
-        <VendingMachine products={products} />
+        <VendingMachine
+          products={products}
+          onSelected={handleSelectedProducts}
+        />
       </div>
     </div>
   );

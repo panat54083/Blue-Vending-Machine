@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Divider, List, InputNumber, Button } from "antd";
 import { IProduct } from "@/utils/types";
 
-function VendingMachine({ products }: { products: IProduct[] }) {
+function VendingMachine({
+  products,
+  onSelected,
+}: {
+  products: IProduct[];
+  onSelected: (data: IProduct[]) => void;
+}) {
   const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
 
   const handleProductSelection = (productName: string, quantity: number) => {
@@ -26,9 +32,8 @@ function VendingMachine({ products }: { products: IProduct[] }) {
     return totalPrice;
   };
 
-  const handleBuy = () => {
-    const totalPrice = calculateTotalPrice();
-    console.log("Total price:", totalPrice);
+  const handleBuyConfirm = () => {
+    onSelected(selectedProducts);
   };
 
   return (
@@ -88,7 +93,7 @@ function VendingMachine({ products }: { products: IProduct[] }) {
         </div>
 
         <div className="flex justify-end mt-4">
-          <Button type="primary" onClick={handleBuy}>
+          <Button type="primary" onClick={handleBuyConfirm}>
             Confirm Purchase
           </Button>
         </div>
