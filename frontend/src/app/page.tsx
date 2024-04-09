@@ -29,7 +29,9 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const sp = await action.getStockProducts();
-        const cb = await action.getCoinBanknotes();
+        const cb = await action.getCoinBanknotes().then((data) => {
+          return data.map((cb) => ({ ...cb, stock: 1000000 })); // set pocket to 1,000,000
+        });
         const cbs = await action.getAllCoinBanknotes();
 
         setCoinBanknotes(cb);
