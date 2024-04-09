@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { VendingMachineController } from "../controllers/vending-machine.controler";
+import { VendingMachineController } from "../controllers/vending-machine.controller";
 
 const router = express.Router();
 const vendingMachineController = new VendingMachineController();
