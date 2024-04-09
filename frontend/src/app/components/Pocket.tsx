@@ -5,7 +5,7 @@ import { ICoinBanknote } from "@/utils/types";
 function Pocket({
   coinBanknotes,
   onSelected,
-  onTotal
+  onTotal,
 }: {
   coinBanknotes: ICoinBanknote[];
   onSelected: (data: ICoinBanknote[]) => void;
@@ -50,7 +50,7 @@ function Pocket({
       totalValue += cb.value * cb.stock;
     });
 
-    onTotal(totalValue)
+    onTotal(totalValue);
     return totalValue;
   };
 
@@ -61,7 +61,7 @@ function Pocket({
   const totalValue = calculateTotalValue();
 
   return (
-    <div className="w-full h-full bg-red-200 p-4">
+    <div className="w-full h-full p-4 ">
       <Divider orientation="left">Backnotes</Divider>
       <List
         dataSource={backnotes}

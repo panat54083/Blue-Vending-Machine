@@ -6,8 +6,11 @@ import VendingMachine from "./components/VendingMachine";
 import { useEffect, useState } from "react";
 import * as action from "@/utils/action";
 import Summary from "./components/Summary";
+import { message } from "antd";
+import { AxiosError } from "axios";
 
 export default function Home() {
+  const [messageApi, contextHolder] = message.useMessage();
   const [coinBanknotes, setCoinBanknotes] = useState<ICoinBanknote[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [selectCoinBanknotes, setSelectCoinBanknotes] = useState<
@@ -24,13 +27,18 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const sp = await action.getStockProducts();
-      const cb = await action.getCoinBanknotes();
-      const cbs = await action.getAllCoinBanknotes();
+      try {
+        const sp = await action.getStockProducts();
+        const cb = await action.getCoinBanknotes();
+        const cbs = await action.getAllCoinBanknotes();
 
-      setCoinBanknotes(cb);
-      setProducts(sp);
-      setCoinBanknotesInStock(cbs);
+        setCoinBanknotes(cb);
+        setProducts(sp);
+        setCoinBanknotesInStock(cbs);
+      } catch (error) {
+        const m = (error as AxiosError).message;
+        messageApi.error(m);
+      }
     };
 
     fetchData();
@@ -49,14 +57,21 @@ export default function Home() {
   };
 
   const handleSelectedProducts = async (products: IProduct[]) => {
-    const response: { message: string; change: ICoinBanknote[] } =
-      await action.calculateChange(selectCoinBanknotes, products);
+    try {
+      const response: { message: string; change: ICoinBanknote[] } =
+        await action.calculateChange(selectCoinBanknotes, products);
 
-    setChange(response.change);
+      setChange(response.change);
+    } catch (error: any) {
+      const m = error.response?.data.message || error.message;
+      messageApi.error(m);
+    }
   };
 
   return (
     <div className="min-h-screen bg-blue-200 flex flex-row p-4 gap-4">
+      {contextHolder}
+
       {/* user pocket */}
       <div className="bg-white basis-1/3">
         <Pocket
@@ -66,8 +81,8 @@ export default function Home() {
         />
       </div>
       {/* vending machine */}
-      <div className="bg-green-200 flex flex-col flex-1">
-        <div className="bg-green-200 flex-1">
+      <div className="flex flex-col flex-1">
+        <div className="bg-white flex-1">
           <VendingMachine
             products={products}
             onSelected={handleSelectedProducts}
@@ -75,7 +90,7 @@ export default function Home() {
           />
         </div>
         {/* summary */}
-        <div className="bg-green-200 flex-1">
+        <div className="bg-blue-100 flex-1">
           <Summary
             change={change}
             totalPayment={totalPayment}

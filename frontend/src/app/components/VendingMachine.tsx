@@ -40,7 +40,7 @@ function VendingMachine({
   };
 
   return (
-    <div className="w-full h-full bg-gray-100 p-4">
+    <div className="w-full h-full p-4">
       <Divider orientation="left">Products</Divider>
       <List
         dataSource={products}

@@ -18,7 +18,7 @@ const Summary: React.FC<SummaryProps> = ({
   coinBanknotesInStock,
 }) => {
   return (
-    <div className="w-full h-full bg-yellow-200 p-4 flex justify-center items-center">
+    <div className="w-full h-full p-4 flex justify-center items-center">
       <Card title="Summary" className="w-1/2 flex flex-col">
         <div>
           <Title level={5}>Total Price:</Title>
