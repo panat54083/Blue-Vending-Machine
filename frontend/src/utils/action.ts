@@ -14,12 +14,14 @@ export const calculateChange = async (
   selectedCoinBanknotes: ICoinBanknote[],
   selectedProducts: IProduct[]
 ) => {
-  console.log(selectedCoinBanknotes, selectedProducts);
-  // const response = await axiosInstance.post("/vending-machine/change", {
-  //   selectedMoney,
-  //   selectedProducts,
-  // });
-  // console.log(response);
+  const response = await axiosInstance.post(
+    "/vending-machine/purchase-product",
+    {
+      coinBanknotes: selectedCoinBanknotes,
+      products: selectedProducts,
+    }
+  );
+  console.log(response);
 };
 
 export const getCoinBanknotes = async (): Promise<ICoinBanknote[]> => {
