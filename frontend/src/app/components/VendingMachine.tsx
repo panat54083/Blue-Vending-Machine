@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Divider, List, InputNumber, Button } from "antd";
-import { IProduct } from "@/utils/constants";
+import { IProduct } from "@/utils/types";
 
 function VendingMachine({ products }: { products: IProduct[] }) {
   const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
@@ -27,7 +27,6 @@ function VendingMachine({ products }: { products: IProduct[] }) {
   };
 
   const handleBuy = () => {
-    console.log(selectedProducts);
     const totalPrice = calculateTotalPrice();
     console.log("Total price:", totalPrice);
   };

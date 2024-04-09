@@ -1,21 +1,12 @@
 import { axiosInstance } from "./axios-instance";
-import { IProduct } from "./type";
-
-export const getUser = async (name: string) => {
-  const response = await axiosInstance.get("/user/" + name);
-  console.log(response);
-};
+import { ICoinBanknote, IProduct } from "./types";
 
 export const getVendingMachine = async () => {
   const response = await axiosInstance.get("/vending-machine");
-  console.log(response);
 };
 
 export const getStockProducts = async (): Promise<IProduct[]> => {
-  const response: IProduct[] = await axiosInstance.get(
-    "/vending-machine/products"
-  );
-  console.log(response);
+  const response: IProduct[] = await axiosInstance.get("/products");
   return response;
 };
 
@@ -28,4 +19,9 @@ export const calculateChange = async (
     selectedProducts,
   });
   console.log(response.data);
+};
+
+export const getCoinBanknotes = async (): Promise<ICoinBanknote[]> => {
+  const response: ICoinBanknote[] = await axiosInstance.get("/coin-banknotes");
+  return response;
 };

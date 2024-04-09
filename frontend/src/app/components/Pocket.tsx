@@ -1,43 +1,59 @@
 import React, { useEffect, useState } from "react";
 import { Divider, List, InputNumber } from "antd";
-import { ICurrency } from "@/utils/constants";
+import { ICoinBanknote } from "@/utils/types";
 
 interface IOnSelectedCurrency {
-  banknotes: ICurrency[];
-  coins: ICurrency[];
+  banknotes: ICoinBanknote[];
+  coins: ICoinBanknote[];
 }
 
 function Pocket({
-  backnotes,
-  coins,
+  coinBanknotes,
   onSelected,
 }: {
-  backnotes: ICurrency[];
-  coins: ICurrency[];
+  coinBanknotes: ICoinBanknote[];
   onSelected: (data: IOnSelectedCurrency) => void;
 }) {
-  const [selectedBacknotes, setSelectedBacknotes] = useState<ICurrency[]>([]);
-  const [selectedCoins, setSelectedCoins] = useState<ICurrency[]>([]);
+  const [coins, setCoins] = useState<ICoinBanknote[]>([]);
+  const [backnotes, setBacknotes] = useState<ICoinBanknote[]>([]);
 
-  const handleBacknoteSelection = (name: string, quantity: number) => {
+  const [selectedBacknotes, setSelectedBacknotes] = useState<ICoinBanknote[]>(
+    []
+  );
+  const [selectedCoins, setSelectedCoins] = useState<ICoinBanknote[]>([]);
+
+  useEffect(() => {
+    const c: ICoinBanknote[] = [];
+    const b: ICoinBanknote[] = [];
+    coinBanknotes.map((cb) => {
+      if (cb.type === "COIN") {
+        c.push(cb);
+      } else if (cb.type === "BANKNOTE") {
+        b.push(cb);
+      }
+    });
+
+    setCoins(c);
+    setBacknotes(b);
+  }, [coinBanknotes]);
+
+  const handleBacknoteSelection = (name: string, stock: number) => {
     const backnote = backnotes.find((b) => b.name === name);
     if (backnote) {
-      const updatedBacknotes = selectedBacknotes.filter(
-        (b) => b.name !== name
-      );
-      if (quantity > 0) {
-        updatedBacknotes.push({ ...backnote, quantity });
+      const updatedBacknotes = selectedBacknotes.filter((b) => b.name !== name);
+      if (stock > 0) {
+        updatedBacknotes.push({ ...backnote, stock });
       }
       setSelectedBacknotes(updatedBacknotes);
     }
   };
 
-  const handleCoinSelection = (name: string, quantity: number) => {
+  const handleCoinSelection = (name: string, stock: number) => {
     const coin = coins.find((c) => c.name === name);
     if (coin) {
       const updatedCoins = selectedCoins.filter((c) => c.name !== name);
-      if (quantity > 0) {
-        updatedCoins.push({ ...coin, quantity });
+      if (stock > 0) {
+        updatedCoins.push({ ...coin, stock });
       }
       setSelectedCoins(updatedCoins);
     }
@@ -46,10 +62,10 @@ function Pocket({
   const calculateTotalValue = () => {
     let totalValue = 0;
     selectedBacknotes.forEach((backnote) => {
-      totalValue += backnote.value * backnote.quantity;
+      totalValue += backnote.value * backnote.stock;
     });
     selectedCoins.forEach((coin) => {
-      totalValue += coin.value * coin.quantity;
+      totalValue += coin.value * coin.stock;
     });
 
     return totalValue;
@@ -75,12 +91,10 @@ function Pocket({
         dataSource={backnotes}
         renderItem={(backnote) => (
           <List.Item>
-            <span>
-              {backnote.name} ({backnote.value} THB)
-            </span>
+            <span>{backnote.name}</span>
             <InputNumber
               min={0}
-              max={backnote.quantity}
+              max={backnote.stock}
               defaultValue={0}
               onChange={(value) =>
                 handleBacknoteSelection(backnote.name, value ? value : 0)
@@ -95,12 +109,10 @@ function Pocket({
         dataSource={coins}
         renderItem={(coin) => (
           <List.Item>
-            <span>
-              {coin.name} ({coin.value} THB)
-            </span>
+            <span>{coin.name}</span>
             <InputNumber
               min={0}
-              max={coin.quantity}
+              max={coin.stock}
               defaultValue={0}
               onChange={(value) =>
                 handleCoinSelection(coin.name, value ? value : 0)
