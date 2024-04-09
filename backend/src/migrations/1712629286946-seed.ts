@@ -2,8 +2,8 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 import { Product } from "../entity/Product";
 import { CoinBanknote } from "../entity/CoinBanknote";
 
-export class Seed1712627020197 implements MigrationInterface {
-  name = "Seed1712627020197";
+export class Seed1712629286946 implements MigrationInterface {
+  name = "Seed1712629286946";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Define an array of products to seed
@@ -17,15 +17,14 @@ export class Seed1712627020197 implements MigrationInterface {
 
     // Define an array of coin/banknote denominations to seed
     const coinBanknotesToSeed: Partial<CoinBanknote>[] = [
-      { denomination: 1, stock: 1000 },
-      { denomination: 5, stock: 500 },
-      { denomination: 10, stock: 1000 },
-      { denomination: 20, stock: 200 },
-      { denomination: 50, stock: 200 },
-      { denomination: 100, stock: 100 },
-      { denomination: 500, stock: 50 },
-      { denomination: 1000, stock: 20 },
-      // Add more coin/banknote denominations as needed
+      { name: "1 THB Coin", value: 1, type: "COIN", stock: 1000 },
+      { name: "5 THB Coin", value: 5, type: "COIN", stock: 500 },
+      { name: "10 THB Coin", value: 10, type: "COIN", stock: 1000 },
+      { name: "20 THB Banknote", value: 20, type: "BANKNOTE", stock: 200 },
+      { name: "50 THB Banknote", value: 50, type: "BANKNOTE", stock: 200 },
+      { name: "100 THB Banknote", value: 100, type: "BANKNOTE", stock: 100 },
+      { name: "500 THB Banknote", value: 500, type: "BANKNOTE", stock: 50 },
+      { name: "1000 THB Banknote", value: 1000, type: "BANKNOTE", stock: 20 },
     ];
 
     // Insert products into the database
