@@ -6,7 +6,13 @@ export class CoinBanknote {
   id: number;
 
   @Column()
-  denomination: number;
+  name: string;
+
+  @Column()
+  value: number;
+
+  @Column()
+  type: 'BANKNOTE' | 'COIN'
 
   @Column()
   stock: number;
