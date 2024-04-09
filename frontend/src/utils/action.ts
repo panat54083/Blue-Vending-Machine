@@ -1,31 +1,29 @@
 import { axiosInstance } from "./axios-instance";
-import { IProduct } from "./type";
-
-export const getUser = async (name: string) => {
-  const response = await axiosInstance.get("/user/" + name);
-  console.log(response);
-};
-
-export const getVendingMachine = async () => {
-  const response = await axiosInstance.get("/vending-machine");
-  console.log(response);
-};
+import { ICoinBanknote, IProduct } from "./types";
 
 export const getStockProducts = async (): Promise<IProduct[]> => {
-  const response: IProduct[] = await axiosInstance.get(
-    "/vending-machine/products"
-  );
-  console.log(response);
+  const response: IProduct[] = await axiosInstance.get("/products");
   return response;
 };
 
 export const calculateChange = async (
-  selectedMoney: any,
-  selectedProducts: any
-) => {
-  const response = await axiosInstance.post("/vending-machine/change", {
-    selectedMoney,
-    selectedProducts,
-  });
-  console.log(response.data);
+  selectedCoinBanknotes: ICoinBanknote[],
+  selectedProducts: IProduct[]
+): Promise<{ message: string; change: ICoinBanknote[] }> => {
+  const response: { message: string; change: ICoinBanknote[] } =
+    await axiosInstance.post("/vending-machine/purchase-product", {
+      coinBanknotes: selectedCoinBanknotes,
+      products: selectedProducts,
+    });
+  return response;
+};
+
+export const getCoinBanknotes = async (): Promise<ICoinBanknote[]> => {
+  const response: ICoinBanknote[] = await axiosInstance.get("/coin-banknotes");
+  return response;
+};
+
+export const getAllCoinBanknotes = async (): Promise<ICoinBanknote[]> => {
+  const response: ICoinBanknote[] = await axiosInstance.get("/coin-banknotes/");
+  return response;
 };

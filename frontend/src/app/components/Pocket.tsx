@@ -1,89 +1,79 @@
 import React, { useEffect, useState } from "react";
 import { Divider, List, InputNumber } from "antd";
-import { ICurrency } from "@/utils/constants";
-
-interface IOnSelectedCurrency {
-  banknotes: ICurrency[];
-  coins: ICurrency[];
-}
+import { ICoinBanknote } from "@/utils/types";
 
 function Pocket({
-  backnotes,
-  coins,
+  coinBanknotes,
   onSelected,
+  onTotal,
 }: {
-  backnotes: ICurrency[];
-  coins: ICurrency[];
-  onSelected: (data: IOnSelectedCurrency) => void;
+  coinBanknotes: ICoinBanknote[];
+  onSelected: (data: ICoinBanknote[]) => void;
+  onTotal: (data: number) => void;
 }) {
-  const [selectedBacknotes, setSelectedBacknotes] = useState<ICurrency[]>([]);
-  const [selectedCoins, setSelectedCoins] = useState<ICurrency[]>([]);
+  const [coins, setCoins] = useState<ICoinBanknote[]>([]);
+  const [backnotes, setBacknotes] = useState<ICoinBanknote[]>([]);
 
-  const handleBacknoteSelection = (name: string, quantity: number) => {
-    const backnote = backnotes.find((b) => b.name === name);
-    if (backnote) {
-      const updatedBacknotes = selectedBacknotes.filter(
-        (b) => b.name !== name
-      );
-      if (quantity > 0) {
-        updatedBacknotes.push({ ...backnote, quantity });
-      }
-      setSelectedBacknotes(updatedBacknotes);
-    }
-  };
+  const [selectedCoinBanknotes, setSelectCoinBanknotes] = useState<
+    ICoinBanknote[]
+  >([]);
 
-  const handleCoinSelection = (name: string, quantity: number) => {
-    const coin = coins.find((c) => c.name === name);
-    if (coin) {
-      const updatedCoins = selectedCoins.filter((c) => c.name !== name);
-      if (quantity > 0) {
-        updatedCoins.push({ ...coin, quantity });
+  useEffect(() => {
+    const c: ICoinBanknote[] = [];
+    const b: ICoinBanknote[] = [];
+    coinBanknotes.map((cb) => {
+      if (cb.type === "COIN") {
+        c.push(cb);
+      } else if (cb.type === "BANKNOTE") {
+        b.push(cb);
       }
-      setSelectedCoins(updatedCoins);
+    });
+
+    setCoins(c);
+    setBacknotes(b);
+  }, [coinBanknotes]);
+
+  const handleSelectCoinBanknotes = (id: number, stock: number) => {
+    const cb = coinBanknotes.find((cb) => cb.id === id);
+    if (cb) {
+      const updatedCb = selectedCoinBanknotes.filter((cb) => cb.id !== id);
+      if (stock > 0) {
+        updatedCb.push({ ...cb, stock });
+      }
+      setSelectCoinBanknotes(updatedCb);
     }
   };
 
   const calculateTotalValue = () => {
     let totalValue = 0;
-    selectedBacknotes.forEach((backnote) => {
-      totalValue += backnote.value * backnote.quantity;
-    });
-    selectedCoins.forEach((coin) => {
-      totalValue += coin.value * coin.quantity;
+    selectedCoinBanknotes.forEach((cb) => {
+      totalValue += cb.value * cb.stock;
     });
 
+    onTotal(totalValue);
     return totalValue;
   };
 
+  useEffect(() => {
+    onSelected(selectedCoinBanknotes);
+  }, [onSelected, selectedCoinBanknotes]);
+
   const totalValue = calculateTotalValue();
 
-  useEffect(() => {
-    const selectedCurrencies: IOnSelectedCurrency = {
-      coins: selectedCoins,
-      banknotes: selectedBacknotes,
-    };
-
-    if (onSelected) {
-      onSelected(selectedCurrencies);
-    }
-  }, [onSelected, selectedBacknotes, selectedCoins, totalValue]);
-
   return (
-    <div className="w-full h-full bg-red-200 p-4">
+    <div className="w-full h-full p-4 ">
       <Divider orientation="left">Backnotes</Divider>
       <List
         dataSource={backnotes}
         renderItem={(backnote) => (
           <List.Item>
-            <span>
-              {backnote.name} ({backnote.value} THB)
-            </span>
+            <span>{backnote.name}</span>
             <InputNumber
               min={0}
-              max={backnote.quantity}
+              max={backnote.stock}
               defaultValue={0}
               onChange={(value) =>
-                handleBacknoteSelection(backnote.name, value ? value : 0)
+                handleSelectCoinBanknotes(backnote.id, value ? value : 0)
               }
             />
           </List.Item>
@@ -95,15 +85,13 @@ function Pocket({
         dataSource={coins}
         renderItem={(coin) => (
           <List.Item>
-            <span>
-              {coin.name} ({coin.value} THB)
-            </span>
+            <span>{coin.name}</span>
             <InputNumber
               min={0}
-              max={coin.quantity}
+              max={coin.stock}
               defaultValue={0}
               onChange={(value) =>
-                handleCoinSelection(coin.name, value ? value : 0)
+                handleSelectCoinBanknotes(coin.id, value ? value : 0)
               }
             />
           </List.Item>

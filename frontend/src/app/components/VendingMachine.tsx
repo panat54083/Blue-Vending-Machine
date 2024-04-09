@@ -1,20 +1,28 @@
-import React, { useState } from "react";
-import { Divider, List, InputNumber, Button } from "antd";
-import { IProduct } from "@/utils/constants";
+import React, { useEffect, useState } from "react";
+import { Divider, List, Button } from "antd";
+import { IProduct } from "@/utils/types";
 
-function VendingMachine({ products }: { products: IProduct[] }) {
+function VendingMachine({
+  products,
+  onSelected,
+  onTotal,
+}: {
+  products: IProduct[];
+  onSelected: (data: IProduct[]) => void;
+  onTotal: (data: number) => void;
+}) {
   const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
 
   const handleProductSelection = (productName: string, quantity: number) => {
     const product = products.find((p) => p.name === productName);
-    if (product) {
-      const updatedProducts = selectedProducts.filter(
-        (p) => p.name !== productName
-      );
-      if (quantity > 0) {
-        updatedProducts.push({ ...product, stock: quantity }); // Update stock to quantity
+    if (product && quantity > 0) {
+      // If a product is already selected, deselect it
+      if (selectedProducts.length > 0) {
+        setSelectedProducts([]);
       }
-      setSelectedProducts(updatedProducts);
+      setSelectedProducts([{ ...product, stock: quantity }]);
+    } else {
+      setSelectedProducts([]); // Deselect if quantity is 0 or no product found
     }
   };
 
@@ -23,17 +31,16 @@ function VendingMachine({ products }: { products: IProduct[] }) {
     selectedProducts.forEach((product) => {
       totalPrice += product.price * product.stock;
     });
+    onTotal(totalPrice);
     return totalPrice;
   };
 
-  const handleBuy = () => {
-    console.log(selectedProducts);
-    const totalPrice = calculateTotalPrice();
-    console.log("Total price:", totalPrice);
+  const handlConfirmPurchase = () => {
+    onSelected(selectedProducts);
   };
 
   return (
-    <div className="w-full h-full bg-gray-100 p-4">
+    <div className="w-full h-full p-4">
       <Divider orientation="left">Products</Divider>
       <List
         dataSource={products}
@@ -51,14 +58,17 @@ function VendingMachine({ products }: { products: IProduct[] }) {
                 </span>
               </span>
               <div className="flex justify-end">
-                <InputNumber
-                  min={0}
-                  max={product.stock}
-                  defaultValue={0}
-                  onChange={(value) =>
-                    handleProductSelection(product.name, value ? value : 0)
+                <Button
+                  type={
+                    selectedProducts.length > 0 &&
+                    selectedProducts[0].name === product.name
+                      ? "primary"
+                      : "default"
                   }
-                />
+                  onClick={() => handleProductSelection(product.name, 1)}
+                >
+                  Select
+                </Button>
               </div>
             </div>
           </List.Item>
@@ -89,7 +99,11 @@ function VendingMachine({ products }: { products: IProduct[] }) {
         </div>
 
         <div className="flex justify-end mt-4">
-          <Button type="primary" onClick={handleBuy}>
+          <Button
+            type="primary"
+            onClick={handlConfirmPurchase}
+            disabled={selectedProducts.length === 0}
+          >
             Confirm Purchase
           </Button>
         </div>
