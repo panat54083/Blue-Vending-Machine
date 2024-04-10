@@ -1,4 +1,4 @@
-FROM node:19.5.0-alpine
+FROM node:21-alpine
 
 RUN npm install -g typescript
 
@@ -16,11 +16,7 @@ RUN NODE_ENV=development npm i
 
 EXPOSE 8000
 
-
-
 RUN npm run build
-
-
 
 # Command to run the app
 CMD npx typeorm migration:run -d dist/data-source.js && node dist/index.js
