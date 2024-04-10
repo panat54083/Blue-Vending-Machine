@@ -1,0 +1,23 @@
+FROM node:21-alpine
+
+RUN npm install -g typescript
+
+# Set working directory
+WORKDIR /app/backend
+
+# Install dependencies
+COPY backend/package*.json ./
+RUN npm ci --only=production
+
+# Copy project files
+COPY backend/ ./
+
+RUN NODE_ENV=development npm i
+
+EXPOSE 8000
+
+RUN npm run build
+
+# Command to run the app
+CMD npx typeorm migration:run -d dist/data-source.js && node dist/index.js
+
