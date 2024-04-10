@@ -33,23 +33,24 @@ services:
     networks:
       - vending-machine-network
 
-  backend:
-    env_file: .env
-    build:
-      context: ../
-      dockerfile: deployment/dockerfile.backend
-    restart: always
-    ports:
-      - "8000:8000"
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_PORT=${DB_PORT}
-      - PORT=${BACKEND_PORT}
-    networks:
-      - vending-machine-network
+  # -------------- this is error part -------------------
+  # backend:
+  #   env_file: .env
+  #   build:
+  #     context: ../
+  #     dockerfile: deployment/dockerfile.backend
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - DB_HOST=${DB_HOST}
+  #     - DB_USER=${DB_USER}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - DB_NAME=${DB_NAME}
+  #     - DB_PORT=${DB_PORT}
+  #     - PORT=${BACKEND_PORT}
+  #   networks:
+  #     - vending-machine-network
 
 networks:
   vending-machine-network:
